@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import requests
 import numpy as np
 import math
-import 
+import os
 from collections import defaultdict, deque
 from typing import List, Tuple, Dict
 from datetime import datetime
