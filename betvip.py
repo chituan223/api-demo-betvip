@@ -2,10 +2,10 @@ from flask import Flask, jsonify
 import requests
 import numpy as np
 import math
-import os
 from collections import defaultdict, deque
 from typing import List, Tuple, Dict
 from datetime import datetime
+
 app = Flask(__name__)
 
 # ==================== CẤU HÌNH API ====================
@@ -14,14 +14,14 @@ API_URL = "https://wtxmd52.macminim6.online/v1/txmd5/lite-sessions?cp=R&cl=R&pf=
 # ==================== BIẾN TOÀN CỤC ====================
 latest_result = {
     "phien": None,
-    "xuc_xac_1": 0,
-    "xuc_xac_2": 0,
-    "xuc_xac_3": 0,
+    "xucxac1": 0,
+    "xucxac2": 0,
+    "xucxac3": 0,
     "tong": 0,
     "ketqua": "",
     "du_doan": "Chờ dữ liệu...",
     "do_tin_cay": 0,
-    "thoi_gian": None
+    "id": "địt mẹ lc79"
 }
 
 # ==================== 20 THUẬT TOÁN ELITE ====================
@@ -676,44 +676,56 @@ def taixiu_md5():
         data = res.json()
 
         latest = data["list"][0]
-        dice1, dice2, dice3 = latest["dices"]
-        total = dice1 + dice2 + dice3
+        d1, d2, d3 = latest["dices"]
+        tong = d1 + d2 + d3
         
-        # Xác định kết quả
-        ket_qua = "Tài" if total >= 11 else "Xỉu"
+        # Xác định kết quả hiện tại
+        ketqua = "TAI" if tong >= 11 else "XIU"
         
-        # Thêm vào lịch sử predictor
-        predictor.add_result(ket_qua)
+        # Thêm kết quả hiện tại vào lịch sử predictor
+        predictor.add_result("Tài" if ketqua == "TAI" else "Xỉu")
         
         # Dự đoán kết quả tiếp theo
         du_doan, do_tin_cay = predictor.predict()
         
-        # Cập nhật last_data
-        latest_result = {
-    "phien": None,
-    "xuc_xac_1": 0,
-    "xuc_xac_2": 0,
-    "xuc_xac_3": 0,
-    "tong": 0,
-    "ketqua": "",
-    "du_doan": "Chờ dữ liệu...",
-    "do_tin_cay": 0,
-    "thoi_gian": None
-}
-
-        return jsonify(latest_result)
+        return jsonify({
+            "phien": latest["id"],
+            "xucxac1": d1,
+            "xucxac2": d2,
+            "xucxac3": d3,
+            "tong": tong,
+            "ketqua": ketqua,
+            "du_doan": du_doan,
+            "do_tin_cay": int(do_tin_cay),  # Chuyển sang integer
+            "id": "địt mẹ lc79"
+        })
 
     except Exception as e:
+        # ❗ BẤT KỲ LỖI GÌ → TRẢ FORM MẶC ĐỊNH
         return jsonify({
-            "error": "Lỗi lấy dữ liệu",
-            "message": str(e)
-        }), 500
+            "phien": None,
+            "xucxac1": 0,
+            "xucxac2": 0,
+            "xucxac3": 0,
+            "tong": 0,
+            "ketqua": "",
+            "du_doan": "Chờ dữ liệu...",
+            "do_tin_cay": 0,
+            "id": "địt mẹ lc79"
+        })
 
 @app.route("/api/predictor/stats", methods=["GET"])
 def predictor_stats():
     """API lấy thống kê predictor"""
+    history_list = list(predictor.history)
+    tai_count = history_list.count('T')
+    xiu_count = history_list.count('X')
+    
     stats = {
-        "history_size": len(predictor.history),
+        "history_size": len(history_list),
+        "tai_count": tai_count,
+        "xiu_count": xiu_count,
+        "tai_percentage": round(tai_count / len(history_list) * 100, 1) if history_list else 0,
         "algorithms_count": 20,
         "version": "Elite v5.0",
         "confidence_range": "55-85%"
@@ -724,14 +736,9 @@ def predictor_stats():
 def predictor_history():
     """API lấy lịch sử"""
     history_list = list(predictor.history)
-    tai_count = history_list.count('T')
-    xiu_count = history_list.count('X')
     
     return jsonify({
         "total": len(history_list),
-        "tai_count": tai_count,
-        "xiu_count": xiu_count,
-        "tai_percentage": round(tai_count / len(history_list) * 100, 1) if history_list else 0,
         "history": history_list[-20:] if len(history_list) >= 20 else history_list
     })
 
@@ -742,7 +749,7 @@ def get_prediction():
     
     return jsonify({
         "du_doan": du_doan,
-        "do_tin_cay": do_tin_cay,
+        "do_tin_cay": int(do_tin_cay),
         "history_size": len(predictor.history),
         "timestamp": datetime.now().isoformat()
     })
@@ -759,9 +766,12 @@ def health_check():
 
 # ==================== CHẠY ỨNG DỤNG ====================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(
-        host="0.0.0.0",
-        port=port,
-        debug=False
-    )
+    print("=" * 60)
+    print("🎯 TÀI XỈU PREDICTION API - 20 THUẬT TOÁN ELITE")
+    print("=" * 60)
+    print(f"📡 API URL: {API_URL}")
+    print(f"🔮 Predictor: {len(predictor.history)} lịch sử")
+    print("🚀 Server đang khởi động trên port 10000...")
+    print("📊 Truy cập endpoints:")
+    print("  • GET /api/taixiumd5          - Lấy kết quả & dự đoán")
+    print("  • GET /api/p
