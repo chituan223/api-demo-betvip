@@ -694,6 +694,7 @@ def taixiu_md5():
             "xuc_xac_2": dice2,
             "xuc_xac_3": dice3,
             "tong": total,
+            "ketqua": ketqua,
             "du_doan": du_doan,
             "do_tin_cay": do_tin_cay,
             "thoi_gian": datetime.now().strftime("%H:%M:%S")
