@@ -14,11 +14,11 @@ API_URL = "https://wtxmd52.macminim6.online/v1/txmd5/lite-sessions?cp=R&cl=R&pf=
 # ==================== BIẾN TOÀN CỤC ====================
 latest_result = {
     "phien": None,
-    "xuc_xac_1": -1,
-    "xuc_xac_2": -1,
-    "xuc_xac_3": -1,
-   "ketqua": ketqua,
-    "tong": -1,
+    "xuc_xac_1": 0,
+    "xuc_xac_2": 0,
+    "xuc_xac_3": 0,
+    "tong": 0,
+    "ketqua": "",
     "du_doan": "Chờ dữ liệu...",
     "do_tin_cay": 0,
     "thoi_gian": None
@@ -689,17 +689,17 @@ def taixiu_md5():
         du_doan, do_tin_cay = predictor.predict()
         
         # Cập nhật last_data
-        latest_result.update({
-            "phien": latest["id"],
-            "xuc_xac_1": dice1,
-            "xuc_xac_2": dice2,
-            "xuc_xac_3": dice3,
-            "tong": total,
-            "ketqua": ketqua,
-            "du_doan": du_doan,
-            "do_tin_cay": do_tin_cay,
-            "thoi_gian": datetime.now().strftime("%H:%M:%S")
-        })
+        latest_result = {
+    "phien": None,
+    "xuc_xac_1": 0,
+    "xuc_xac_2": 0,
+    "xuc_xac_3": 0,
+    "tong": 0,
+    "ketqua": "",
+    "du_doan": "Chờ dữ liệu...",
+    "do_tin_cay": 0,
+    "thoi_gian": None
+}
 
         return jsonify(latest_result)
 
