@@ -764,15 +764,15 @@ def health_check():
         "version": "2.0",
         "timestamp": datetime.now().isoformat()
     })
-
-# ==================== CHẠY ỨNG DỤNG ====================
+    
 if __name__ == "__main__":
     print("=" * 60)
-    print("🎯 TÀI XỈU PREDICTION API - 20 THUẬT TOÁN ELITE")
+    print("🎯 TÀI XỈU PREDICTION API")
     print("=" * 60)
-    print(f"📡 API URL: {API_URL}")
-    print(f"🔮 Predictor: {len(predictor.history)} lịch sử")
-    print("🚀 Server đang khởi động trên port 10000...")
+    print(f"🔗 API URL: {API_URL}")
+    print(f"🔮 Predictor history: {len(predictor.history)}")
+    print("🚀 Server đang khởi động...")
     print("📊 Truy cập endpoints:")
-    print("  • GET /api/taixiumd5          - Lấy kết quả & dự đoán")
-    print("  • GET /api/p
+    print(" • GET /api/taixiumd5")
+    print(" • GET /health")
+    app.run(host="0.0.0.0", port=10000)
