@@ -17,7 +17,7 @@ latest_result = {
     "xuc_xac_1": -1,
     "xuc_xac_2": -1,
     "xuc_xac_3": -1,
-    "ketqua": "",
+   "ketqua": ketqua,
     "tong": -1,
     "du_doan": "Chờ dữ liệu...",
     "do_tin_cay": 0,
