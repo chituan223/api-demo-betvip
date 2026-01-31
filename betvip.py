@@ -51,29 +51,48 @@ def get_taixiu_data():
         print("❌ API lỗi:", e)
         return None
 
-# ================== TÍNH XÁC SUẤT 10 PHIÊN ==================
-def tinh_xac_suat_10():
-    last10 = list(history)[-10:]
-    if len(last10) < 10:
+# ================== TÍNH XÁC SUẤT CHUẨN ==================
+def tinh_xac_suat_chuan():
+    last10 = list(history)[-15:]
+    if len(last10) < 15:
         return "---", 0, ""
 
     tai = last10.count("Tài")
     xiu = last10.count("Xỉu")
 
-    if tai >= xiu:
-        return "Tài", round(tai / 10 * 100), "".join("T" if x == "Tài" else "X" for x in last10)
-    else:
-        return "Xỉu", round(xiu / 10 * 100), "".join("T" if x == "Tài" else "X" for x in last10)
+    freq_tai = tai / 10 * 100
+    freq_xiu = xiu / 10 * 100
 
-# ================== LƯU FILE THUẬT TOÁN ==================
-def save_to_file(cau, tai_pct, xiu_pct):
-    if not os.path.exists(DATA_FILE):
-        open(DATA_FILE, "w", encoding="utf-8").close()
+    # Xu hướng 3 phiên cuối
+    last3 = last10[-3:]
+    trend = last3.count("Tài") / 3 * 100
 
+    # Độ lệch quá mạnh → trừ điểm
+    bias_penalty = 0
+    if freq_tai >= 80 or freq_xiu >= 80:
+        bias_penalty = 10
+
+    # Xác suất tổng hợp
+    final_tai = 0.6 * freq_tai + 0.3 * trend - bias_penalty
+    final_xiu = 100 - final_tai
+
+    # Giới hạn an toàn
+    final_tai = max(55, min(85, round(final_tai)))
+    final_xiu = 100 - final_tai
+
+    du_doan = "Tài" if final_tai >= final_xiu else "Xỉu"
+    do_tin_cay = max(final_tai, final_xiu)
+
+    cau = "".join("T" if x == "Tài" else "X" for x in last10)
+
+    return du_doan, do_tin_cay, cau
+
+# ================== LƯU FILE ==================
+def save_to_file(cau, du_doan, do_tin_cay):
     with open(DATA_FILE, "a", encoding="utf-8") as f:
-        f.write(f"{cau} | TAI={tai_pct}% | XIU={xiu_pct}%\n")
+        f.write(f"{cau} | DU_DOAN={du_doan} | TIN_CAY={do_tin_cay}%\n")
 
-# ================== THREAD CHẠY NGẦM ==================
+# ================== THREAD ==================
 def background_updater():
     global last_data
     last_phien = None
@@ -86,12 +105,10 @@ def background_updater():
             if phien != last_phien:
                 history.append(ketqua)
 
-                du_doan, do_tin_cay, cau = tinh_xac_suat_10()
+                du_doan, do_tin_cay, cau = tinh_xac_suat_chuan()
 
                 if do_tin_cay > 0:
-                    save_to_file(cau, 
-                                 do_tin_cay if du_doan == "Tài" else 100 - do_tin_cay,
-                                 do_tin_cay if du_doan == "Xỉu" else 100 - do_tin_cay)
+                    save_to_file(cau, du_doan, do_tin_cay)
 
                 last_data = {
                     "phien": phien,
@@ -106,7 +123,7 @@ def background_updater():
                     "id": "lc79"
                 }
 
-                print(f"✅ Phiên {phien} | {ketqua} | {tong}")
+                print(f"✅ Phiên {phien} | {ketqua} | {du_doan} ({do_tin_cay}%)")
                 last_phien = phien
 
         time.sleep(5)
