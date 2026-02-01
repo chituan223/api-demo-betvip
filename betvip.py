@@ -20,8 +20,7 @@ last_data = {
     "khuyen_nghi": "không vào",
     "xac_suat_tai": 0,
     "xac_suat_xiu": 0,
-    "cau": "",
-    "id": "lc79-real"
+      "cau": "",
 }
 
 # ================== API THẬT ==================
