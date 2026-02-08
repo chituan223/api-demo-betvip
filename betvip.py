@@ -464,8 +464,8 @@ prediction_table = {
   "TTXXTXTTTXXT": "Tài",
   "TXXTXTTTXXTT": "Tài",
   "XXTXTTTXXTTT": "Xỉu",
-  "XTXTTTXXTTTX": "Xỉu"
-  "TTTTTXTTTXXTT": "Tài",
+  "XTXTTTXXTTTX": "Xỉu",
+ 
 }
 
 API_URL = "https://wtxmd52.tele68.com/v1/txmd5/sessions"
