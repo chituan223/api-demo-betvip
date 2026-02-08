@@ -465,10 +465,8 @@ prediction_table = {
   "TXXTXTTTXXTT": "Tài",
   "XXTXTTTXXTTT": "Xỉu",
   "XTXTTTXXTTTX": "Xỉu"
-   "TTTTTTTTTTTTT": "Tài",
-"TTTTTTTTTTTTX": "Tài",
-"TTTTTTTTTTTXT": "Xỉu",
-"TTTTTTTTTTTXX": "Xỉu",
+  "TTTTTTTTTTTXT": "Xỉu",
+  "TTTTTTTTTTTXX": "Xỉu",
 "TTTTTTTTTTXTT": "Tài",
 "TTTTTTTTTTXTX": "Tài",
 "TTTTTTTTTTXXT": "Tài",
